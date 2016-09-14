@@ -1,2 +1,3 @@
 # RealTimeGame
-A realtime web app using Socket.io
+
+a [Sails](http://sailsjs.org) application
