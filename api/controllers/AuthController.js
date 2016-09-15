@@ -6,21 +6,22 @@
  */
 
 module.exports = {
-	
-
-
   /**
    * `AuthController.login()`
    */
   login: function (req, res) {
     if(req.method == "POST" && req.param("User",null)!=null){
       User.findOne(req.param("User")).exec(function(err,model){
+        if(model!=null){
           res.cookie('user',model.id);
+          res.redirect('/');
+        } else {
           res.redirect('/auth/login');
+        }
       })
     } else {
-    res.view('auth/login', {layout: 'layout', title: 'Login'});
-  }
+      res.view('auth/login', {layout: 'layout', title: 'Login'});
+    }
   },
 
 
@@ -37,8 +38,17 @@ module.exports = {
           }
       })
     } else {
-    res.view('auth/login', {layout: 'layout', title: 'Register'});
+      res.view('auth/login', {layout: 'layout', title: 'Register'});
+    }
+  },
+
+  /**
+  * `AuthController.logout()`
+  */
+  logout: function (req,res){
+    res.clearCookie('user');
+    res.redirect('/');
   }
-  }
+
 };
 
