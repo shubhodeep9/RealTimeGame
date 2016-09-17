@@ -20,7 +20,6 @@ module.exports = {
 			Game.create(newGame).exec(function(err,model){
 				if(!err) {
 					sails.sockets.blast('gameCreated',model);
-					
 				}
 			});
 			res.ok();
@@ -38,10 +37,33 @@ module.exports = {
 	  						sails.sockets.blast('gameUpdated',game);
 	  						res.ok();
 	  					});
-	  				} 
-  				} 
+	  				} else {
+	  					res.forbidden();
+	  				}
+  				} else {
+  					res.badRequest();
+  				}
   			});
   		});
+  	}
+  },
+  play: function (req,res){
+  	if(req.cookies.user!=null){
+  		if(req.cookies.game==null){
+  			Game.findOne({users:req.cookies.user}).exec(function(err,game){
+  				if(game==null){
+  					res.redirect('/');
+   				}
+   				res.cookie('game',game.id);
+   				res.redirect('/game/play');
+  			})
+  		} else {
+  			Game.findOne({id:req.cookies.game}).exec(function(err,game){
+  				res.send(game.users.length);
+  			});
+  		}
+  	} else {
+  		res.redirect('/auth/login');
   	}
   }
 };

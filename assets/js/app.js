@@ -23,6 +23,10 @@ $(".join-game").on("click",function(){
 	io.socket.post('/game/join',{'gameid':id},function(data,jwr){
 		if(jwr.statusCode==200){
 			window.location = '/game/play';
+		} else if(jwr.statusCode==403) {
+			window.alert("Not allowed");
+		} else {
+			window.alert("Maximum limit reached");
 		}
 	})
 });
