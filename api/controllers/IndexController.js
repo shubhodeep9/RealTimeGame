@@ -8,6 +8,9 @@
 module.exports = {
 	index: function (req,res){
 		if(req.cookies.user!=null){
+			if(req.cookies.game!=null){
+				res.redirect('/game/play');
+			}
 			User.findOne({id: req.cookies.user}).exec(function(err, user){
 				Game.find().exec(function(err,games){
 					res.view("homepage",{layout: 'layout',title: 'RealGame', username: user.username, games: games});

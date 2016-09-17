@@ -18,12 +18,9 @@ module.exports = {
 			var newGame = req.param("Game");
 			newGame.users = [user.id];
 			Game.create(newGame).exec(function(err,model){
-				if(err){
-					res.badRequest();
-				} else {
+				if(!err) {
 					sails.sockets.blast('gameCreated',model);
-					res.cookie('game',model.id);
-					res.redirect('/game/play');
+					
 				}
 			});
 			res.ok();
@@ -31,16 +28,18 @@ module.exports = {
   	}
   },
   join: function (req,res) {
-  	if(req.method == "POST" && req.cookies.user!=null && req.cookies.game==null && req.param("gameid",null)!=null && req.isSocket){
+  	if(req.method == "POST" && req.cookies.user!=null && req.session.game==null && req.param("gameid",null)!=null && req.isSocket){
   		User.findOne({id: req.cookies.user}).exec(function(err, user){
-  			Game.find({id:req.param("gameid")}).exec(function(err, game){
+  			Game.findOne({id:req.param("gameid")}).exec(function(err, game){
   				if(game.users.length < 4){
 	  				if((game.allowed.length>0 && game.allowed.indexOf(req.cookies.user)>=0) || game.allowed.length==0){
-	  					Game.update({id:req.param("gameid")},{$push:{users: user.id}}).exec(function(err, updated){
-	  						sails.sockets.blast('gameUpdated',updated);
+	  					game.users.push(user.id);
+	  					game.save(function(err){
+	  						sails.sockets.blast('gameUpdated',game);
+	  						res.ok();
 	  					});
-	  				}
-  				}
+	  				} 
+  				} 
   			});
   		});
   	}

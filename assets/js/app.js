@@ -1,4 +1,5 @@
 $("#createGame").on("click",function() {
+	var $btn = $(this).button('loading');
 	var allowed = [];
 	$(".allowed-user").each(function(){
 		if($(this).val()!=''){
@@ -11,13 +12,25 @@ $("#createGame").on("click",function() {
 	};
 	io.socket.post('/game/create',{'Game':game},function(data, jwr){
 		if(jwr.statusCode==200){
-			console.log("Game created");
+			window.location = '/game/play';
 		}
+		$btn.button('reset');
 	});
 });
 
-$("#")
+$(".join-game").on("click",function(){
+	var id = $(this).attr('id');
+	io.socket.post('/game/join',{'gameid':id},function(data,jwr){
+		if(jwr.statusCode==200){
+			window.location = '/game/play';
+		}
+	})
+});
 
 io.socket.on('gameCreated',function(data){
-	$("#onlinegames").append("<a href='"+data.id+"' class='list-group-item join-game'><span class='badge'>"+data.users.length+"</span>"+data.name+"</a>");
+	$("#onlinegames").append("<a href='#' id='"+data.id+"' class='list-group-item join-game'><span class='badge'>"+data.users.length+"</span>"+data.name+"</a>");
+});
+
+io.socket.on('gameUpdated',function(data){
+	$('#'+data.id).html("<span class='badge'>"+data.users.length+"</span>"+data.name);
 });
