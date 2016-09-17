@@ -8,7 +8,8 @@
 module.exports = {
 	index: function (req,res){
 		if(req.cookies.user!=null){
-			res.send("<a href='/auth/logout'>Logout</a>");
+			console.log(req.socket.id);
+			res.view("homepage",{layout: 'layout'});
 		} else {
 			res.redirect("/auth/login");
 		}
