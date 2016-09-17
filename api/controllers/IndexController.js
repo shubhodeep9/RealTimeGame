@@ -8,11 +8,19 @@
 module.exports = {
 	index: function (req,res){
 		if(req.cookies.user!=null){
-			console.log(req.socket.id);
-			res.view("homepage",{layout: 'layout'});
+			User.findOne({id: req.cookies.user}).exec(function(err, user){
+				Game.find().exec(function(err,games){
+					res.view("homepage",{layout: 'layout', username: user.username, games: games});
+				});
+			});
+			
 		} else {
 			res.redirect("/auth/login");
 		}
+	},
+	soc: function(req,res){
+		sails.sockets.blast('test','hey');
+		res.send('hey');
 	}
 };
 

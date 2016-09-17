@@ -10,8 +10,12 @@ module.exports = {
    * `AuthController.login()`
    */
   login: function (req, res) {
+    if(req.cookies.user!=null){
+      res.redirect('/');
+    }
     if(req.method == "POST" && req.param("User",null)!=null){
       User.findOne(req.param("User")).exec(function(err,model){
+        
         if(model!=null){
           res.cookie('user',model.id);
           res.redirect('/');
