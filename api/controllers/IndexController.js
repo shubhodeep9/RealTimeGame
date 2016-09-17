@@ -10,10 +10,9 @@ module.exports = {
 		if(req.cookies.user!=null){
 			User.findOne({id: req.cookies.user}).exec(function(err, user){
 				Game.find().exec(function(err,games){
-					res.view("homepage",{layout: 'layout', username: user.username, games: games});
+					res.view("homepage",{layout: 'layout',title: 'RealGame', username: user.username, games: games});
 				});
 			});
-			
 		} else {
 			res.redirect("/auth/login");
 		}

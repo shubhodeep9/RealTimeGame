@@ -16,6 +16,8 @@ $("#createGame").on("click",function() {
 	});
 });
 
+$("#")
+
 io.socket.on('gameCreated',function(data){
-	$("#onlinegames").append("<li class='list-group-item'><span class='badge'>"+data.users.length+"</span>"+data.name+"</li>");
+	$("#onlinegames").append("<a href='"+data.id+"' class='list-group-item join-game'><span class='badge'>"+data.users.length+"</span>"+data.name+"</a>");
 });

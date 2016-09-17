@@ -37,10 +37,10 @@
   <div class="panel panel-default">
   
   <div class="panel-heading">Online Games</div>
-    <ul class="list-group" id="onlinegames">
+    <div class="list-group" id="onlinegames">
       <% for(var i=0; i< games.length; i++){ %>
-      <li class="list-group-item"><span class="badge"><%= games[i].users.length %></span><%= games[i].name %></li>
+      <a href="#" id="<%= games[i].id %>" class="list-group-item join-game"><span class="badge"><%= games[i].users.length %></span><%= games[i].name %></a>
       <% } %>
-    </ul>
+    </div>
 </div>
 </div>
