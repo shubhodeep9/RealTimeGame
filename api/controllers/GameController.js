@@ -52,7 +52,7 @@ module.exports = {
 		Game.findOne({users:req.session.user}).exec(function(err,game){
 			if(game!=null){
 				req.session.game = game.id;
-				res.send('In the game');
+				res.view('game',{layout:'layout'});
 				console.log('In the game');
 			} else {
 				res.redirect('/');
