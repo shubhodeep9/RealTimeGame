@@ -125,16 +125,16 @@ module.exports.sockets = {
   afterDisconnect: function(session, socket, cb) {
     // By default: do nothing.
     console.log(session.game);
-    // if(session.game){
-    //   Game.findOne({id:session.game},function(err,game){
-    //     game.users.splice(game.users.indexOf(session.user),1);
-    //     game.save(function(err){
-    //       session.game = null;
-    //       sails.sockets.blast('gameUpdated',game);
-    //       console.log(game.users);
-    //     });
-    //   });
-    // }
+    if(session.game){
+      Game.findOne({id:session.game},function(err,game){
+        game.users.splice(game.users.indexOf(session.user),1);
+        game.save(function(err){
+          session.game = null;
+          sails.sockets.blast('gameUpdated',game);
+          console.log(game.users);
+        });
+      });
+    }
     
   },
 
