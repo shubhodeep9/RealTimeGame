@@ -6,7 +6,13 @@
         <input type="text" id="inputEmail" class="form-control" placeholder="Username" required name="User[username]" autofocus>
         <label for="inputPassword" class="sr-only">Password</label>
         <input type="password" id="inputPassword" class="form-control" placeholder="Password" name="User[password]" required>
-        <button class="btn btn-lg btn-primary btn-block" type="submit"><%- title -%></button>
+        <button class="btn btn-lg btn-primary btn-block" type="submit"><%- title -%></button>&nbsp;<% if(title=="Login"){
+        	%>
+        	<a href="/auth/register">Register Here</a>
+        	<%
+        	} else { %>
+        		<a href="/auth/login">Login Here</a>
+        	<% } %>
       </form>
 
     </div>

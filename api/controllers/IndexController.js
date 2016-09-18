@@ -8,22 +8,14 @@
 module.exports = {
 	index: function (req,res){
 		if(req.session.user){
-			if(req.session.game){
-				res.redirect('/game/play');
-			} else {
 			User.findOne({id: req.session.user}).exec(function(err, user){
 				Game.find().exec(function(err,games){
 					res.view("homepage",{layout: 'layout',title: 'RealGame', username: user.username, games: games});
 				});
 			});
-		}
 		} else {
 			res.redirect("/auth/login");
 		}
-	},
-	soc: function(req,res){
-		sails.sockets.blast('test','hey');
-		res.send('hey');
 	}
 };
 

@@ -51,9 +51,11 @@ module.exports = {
   * `AuthController.logout()`
   */
   logout: function (req,res){
-    res.session.user.destroy(function(err){
-      return res.redirect('/');
-    });
+    req.session.user = null;
+    if(req.session.game){
+      req.session.game = null;
+    }
+    return res.redirect('/auth/login');
   }
 
 };

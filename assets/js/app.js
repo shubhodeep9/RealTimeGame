@@ -36,6 +36,10 @@ io.socket.on('gameCreated',function(data){
 });
 
 io.socket.on('gameUpdated',function(data){
-	$('#'+data.id).html("<span class='badge'>"+data.users.length+"</span>"+data.name);
+	if(data.users.length==0){
+		$('#'+data.id).hide();
+	} else {
+		$('#'+data.id).html("<span class='badge'>"+data.users.length+"</span>"+data.name);
+	}
 });
 

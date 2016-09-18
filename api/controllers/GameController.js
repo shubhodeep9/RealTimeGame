@@ -27,7 +27,7 @@ module.exports = {
   	}
   },
   join: function (req,res) {
-  	if(req.method == "POST" && req.session.user!=null && req.session.game==null && req.param("gameid",null)!=null && req.isSocket){
+  	if(req.method == "POST" && req.session.user && !req.session.game && req.param("gameid",null)!=null && req.isSocket){
   		User.findOne({id: req.session.user}).exec(function(err, user){
   			Game.findOne({id:req.param("gameid")}).exec(function(err, game){
   				if(game.users.length < 4){
@@ -47,25 +47,21 @@ module.exports = {
   		});
   	}
   },
-  // play: function (req,res){
-  // 	if(req.session.user!=null){
-  // 		if(req.session.game==null){
-  // 			Game.findOne({users:req.session.user}).exec(function(err,game){
-  // 				if(game==null){
-  // 					res.redirect('/');
-  //  				}
-  //  				res.cookie('game',game.id);
-  //  				res.redirect('/game/play');
-  // 			})
-  // 		} else {
-  // 			Game.findOne({id:req.session.game}).exec(function(err,game){
-  // 				res.send(game.users.length);
-  // 			});
-  // 		}
-  // 	} else {
-  // 		res.redirect('/auth/login');
-  // 	}
-  // },
+  play: function (req,res){
+  	if(req.session.user){
+		Game.findOne({users:req.session.user}).exec(function(err,game){
+			if(game!=null){
+				req.session.game = game.id;
+				res.send('In the game');
+				console.log('In the game');
+			} else {
+				res.redirect('/');
+			}
+		});
+  	} else {
+  		res.redirect('/auth/login');
+  	}
+  },
 
   leave: function(req,res){
   	console.log(req.session.user);
