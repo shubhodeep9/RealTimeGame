@@ -38,3 +38,4 @@ io.socket.on('gameCreated',function(data){
 io.socket.on('gameUpdated',function(data){
 	$('#'+data.id).html("<span class='badge'>"+data.users.length+"</span>"+data.name);
 });
+

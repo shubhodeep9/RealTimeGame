@@ -7,11 +7,11 @@
 
 module.exports = {
 	index: function (req,res){
-		if(req.cookies.user!=null){
-			if(req.cookies.game!=null){
+		if(req.session.user){
+			if(req.session.game){
 				res.redirect('/game/play');
 			} else {
-			User.findOne({id: req.cookies.user}).exec(function(err, user){
+			User.findOne({id: req.session.user}).exec(function(err, user){
 				Game.find().exec(function(err,games){
 					res.view("homepage",{layout: 'layout',title: 'RealGame', username: user.username, games: games});
 				});

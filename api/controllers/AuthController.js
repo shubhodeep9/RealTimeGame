@@ -10,21 +10,22 @@ module.exports = {
    * `AuthController.login()`
    */
   login: function (req, res) {
-    if(req.cookies.user!=null){
+    if(req.session.user){
       res.redirect('/');
-    }
-    if(req.method == "POST" && req.param("User",null)!=null){
-      User.findOne(req.param("User")).exec(function(err,model){
-        
-        if(model!=null){
-          res.cookie('user',model.id);
-          res.redirect('/');
-        } else {
-          res.redirect('/auth/login');
-        }
-      })
     } else {
-      res.view('auth/login', {layout: 'layout', title: 'Login'});
+      if(req.method == "POST" && req.param("User",null)!=null){
+        User.findOne(req.param("User")).exec(function(err,model){
+          
+          if(model!=null){
+            req.session.user = model.id;
+            res.redirect('/');
+          } else {
+            res.redirect('/auth/login');
+          }
+        })
+      } else {
+        res.view('auth/login', {layout: 'layout', title: 'Login'});
+      }
     }
   },
 
@@ -50,8 +51,9 @@ module.exports = {
   * `AuthController.logout()`
   */
   logout: function (req,res){
-    res.clearCookie('user');
-    res.redirect('/');
+    res.session.user.destroy(function(err){
+      return res.redirect('/');
+    });
   }
 
 };
