@@ -52,8 +52,9 @@ module.exports = {
 		Game.findOne({users:req.session.user}).exec(function(err,game){
 			if(game!=null){
 				req.session.game = game.id;
-				res.view('game',{layout:'layout'});
-				console.log('In the game');
+				User.find({id:game.users}).exec(function(err,users){
+					res.view('game',{layout:'layout',users:users});
+				});
 			} else {
 				res.redirect('/');
 			}
