@@ -8,11 +8,15 @@
 module.exports = {
 	index: function (req,res){
 		if(req.session.user){
-			User.findOne({id: req.session.user}).exec(function(err, user){
-				Game.find().exec(function(err,games){
-					res.view("homepage",{layout: 'layout',title: 'RealGame', username: user.username, games: games});
+			if(req.session.game){
+				res.redirect('/game/play');
+			} else {
+				User.findOne({id: req.session.user}).exec(function(err, user){
+					Game.find().exec(function(err,games){
+						res.view("homepage",{layout: 'layout',title: 'RealGame', username: user.username, games: games});
+					});
 				});
-			});
+			}
 		} else {
 			res.redirect("/auth/login");
 		}

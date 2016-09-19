@@ -43,9 +43,6 @@ io.socket.on('gameUpdated',function(data){
 	}
 });
 
-io.socket.on('connect',function(){
-	console.log('hey');
-});
 
 
 
