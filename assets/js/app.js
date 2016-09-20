@@ -43,6 +43,15 @@ io.socket.on('gameUpdated',function(data){
 	}
 });
 
+io.socket.on('connect',function(){
+	//Request to establish personal game updates
+   	io.socket.get('/game/subscribe');
+
+   	//Waiting for updates
+   	io.socket.on('gamePlayers',function(data){
+
+   	});
+});
 
 
 
