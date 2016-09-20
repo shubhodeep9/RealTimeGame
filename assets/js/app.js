@@ -49,13 +49,18 @@ io.socket.on('connect',function(){
 
    	//Waiting for updates
    	io.socket.on('gamePlayers',function(data){
-   		console.log(data);
+   		htmlContent = "";
+   		for(var i=0;i<data.length; i++){
+   			htmlContent += "<li href='#'' class='list-group-item'>"+data[i].username+"</li>";
+   			$("#onlineplayers").html(htmlContent);
+   		}
    	});
 });
 
 
 $("#leaveGame").click(function(){
 	io.socket.post('/game/leave',function(data,jwr){
+		console.log(jwr.statusCode);
 		if(jwr.statusCode==200){
 			window.location = '/';
 		}

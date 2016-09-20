@@ -35,7 +35,9 @@ module.exports = {
 	  					game.users.push(user.id);
 	  					game.save(function(err){
 	  						sails.sockets.blast('gameUpdated',game);
-	  						sails.sockets.broadcast(game.id,'gamePlayers',game);
+	  						User.find({id:game.users}).exec(function(err,users){
+	  							sails.sockets.broadcast(game.id,'gamePlayers',users);
+	  						});
 	  						res.ok();
 	  					});
 	  				} else {
@@ -85,10 +87,12 @@ module.exports = {
 		          	game.users.splice(game.users.indexOf(req.session.user),1);
 		          	game.save(function(err){
 		            	sails.sockets.blast('gameUpdated',game);
-		            	sails.sockets.broadcast(game.id,'gamePlayers',game);
+		            	User.find({id:game.users}).exec(function(err,users){
+  							sails.sockets.broadcast(game.id,'gamePlayers',users);
+				          	req.session.game = null;
+		  				  	res.ok();
+  						});
 		          	});
-		          	req.session.game = null;
-  				  	res.ok();
 		        });
   			}
   		})

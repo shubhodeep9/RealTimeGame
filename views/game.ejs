@@ -7,4 +7,18 @@
       <a class="navbar-brand" id="leaveGame" href="!#">Leave Game</a>
     </div>
   </nav>
+  <div class="row">
+  	<div class="col-xs-5 col-sm-5 col-md-5 col-lg-5">
+  		<div class="panel panel-default">
+  			<div class="panel-heading">Online Players</div>
+	    		<ul class="list-group" id="onlineplayers">
+	      			<% for(var i=0; i< users.length; i++){
+	       			%>
+	      			<li href="#" class="list-group-item"><%= users[i].username %></li>
+	      			<%
+	    				} %>
+	    		</ul>
+			</div>
+  	</div>
+  </div>
 </div>
