@@ -20,7 +20,6 @@ module.exports = {
 			Game.create(newGame).exec(function(err,model){
 				if(!err) {
 					sails.sockets.blast('gameCreated',model);
-					sails.sockets.join(req,model.id);
 				}
 			});
 			res.ok();
@@ -36,7 +35,7 @@ module.exports = {
 	  					game.users.push(user.id);
 	  					game.save(function(err){
 	  						sails.sockets.blast('gameUpdated',game);
-	  						sails.sockets.broadcast(game.id,game);
+	  						sails.sockets.broadcast(game.id,'gamePlayers',game);
 	  						res.ok();
 	  					});
 	  				} else {
@@ -55,7 +54,7 @@ module.exports = {
 			if(game!=null){
 				req.session.game = game.id;
 				User.find({id:game.users}).exec(function(err,users){
-					res.view('game',{users:users});
+					res.view('game',{users:users,title:game.name});
 				});
 			} else {
 				res.redirect('/');
@@ -76,7 +75,24 @@ module.exports = {
   },
 
   leave: function(req,res){
-  	sails.sockets.broadcast(req.session.game,{data:'haha'});
+  	if(req.method == "POST" && req.session.user && req.session.game && req.isSocket){
+  		sails.sockets.leave(req,req.session.game,function(err){
+  			if(err){
+  				console.log(err);
+  				res.serverError(err);
+  			} else {
+  				Game.findOne({id:req.session.game},function(err,game){
+		          	game.users.splice(game.users.indexOf(req.session.user),1);
+		          	game.save(function(err){
+		            	sails.sockets.blast('gameUpdated',game);
+		            	sails.sockets.broadcast(game.id,'gamePlayers',game);
+		          	});
+		          	req.session.game = null;
+  				  	res.ok();
+		        });
+  			}
+  		})
+  	}
   }
 };
 

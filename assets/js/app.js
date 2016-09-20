@@ -49,9 +49,17 @@ io.socket.on('connect',function(){
 
    	//Waiting for updates
    	io.socket.on('gamePlayers',function(data){
-
+   		console.log(data);
    	});
 });
 
+
+$("#leaveGame").click(function(){
+	io.socket.post('/game/leave',function(data,jwr){
+		if(jwr.statusCode==200){
+			window.location = '/';
+		}
+	});
+});
 
 
