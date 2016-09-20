@@ -10,7 +10,8 @@ module.exports = {
   attributes: {
   	'name': 'STRING',
   	'users': 'ARRAY',
-  	'allowed': 'ARRAY'
+  	'allowed': 'ARRAY',
+  	'playing': 'STRING'
   }
 };
 

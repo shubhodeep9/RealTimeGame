@@ -14,7 +14,7 @@ module.exports = {
    * The controller creates a new game,
    * and pushes the update to the public\
    * socket handler.
-   * @params req, res
+   * @param req, res
    * @return Response status code
    */
   create: function (req, res) {
@@ -22,6 +22,7 @@ module.exports = {
   		User.findOne({id: req.session.user}).exec(function(err, user){
 			var newGame = req.param("Game");
 			newGame.users = [user.id];
+			newGame.playing = 'NO';
 			Game.create(newGame).exec(function(err,model){
 				if(!err) {
 					sails.sockets.blast('gameCreated',model);
@@ -37,7 +38,7 @@ module.exports = {
   * a game from the list in index page.
   * Broadcasts the number of playes to public\
   * socket handler.
-  * @params req, res
+  * @param req, res
   * @return Response status code
   */
   join: function (req,res) {
@@ -68,7 +69,7 @@ module.exports = {
   /**
   * The controller sets the game session\
   * Renders the view for the page /game/play
-  * @params req, res
+  * @param req, res
   * @return Renders game.ejs
   */
   play: function (req,res){
@@ -77,7 +78,7 @@ module.exports = {
 			if(game!=null){
 				req.session.game = game.id;
 				User.find({id:game.users}).exec(function(err,users){
-					res.view('game',{users:users,title:game.name});
+					res.view('game',{users:users,title:game.name,playing:game.playing});
 				});
 			} else {
 				res.redirect('/');
@@ -90,7 +91,7 @@ module.exports = {
 
   /**
   * The controller joins the socket to the session game room.
-  * @params req, res
+  * @param req, res
   * @return response json
   */
   subscribe: function(req,res){
@@ -108,7 +109,7 @@ module.exports = {
   * leaves the socket room.
   * Removes the user from the database.
   * nullifies the game session
-  * @params req, res
+  * @param req, res
   * @return response status code
   */
   leave: function(req,res){
@@ -131,6 +132,15 @@ module.exports = {
 		        });
   			}
   		})
+  	}
+  },
+
+  activate: function(req,res){
+  	if(req.isSocket && req.session.user && req.session.game){
+  		Game.update({id:req.session.game},{playing:req.param('playing')}).exec(function(err,game){
+  			console.log(game);
+  			sails.sockets.broadcast(req.session.game,'gamePlay',{playing:req.param('playing')});
+  		});
   	}
   }
 };

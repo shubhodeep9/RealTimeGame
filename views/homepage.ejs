@@ -41,7 +41,7 @@
       <% for(var i=0; i< games.length; i++){
         if(games[i].users.length>0){
        %>
-      <a href="#" id="<%= games[i].id %>" class="list-group-item join-game"><span class="badge"><%= games[i].users.length %></span><%= games[i].name %></a>
+      <a href="#" onclick="joingame('<%= games[i].id %>')" class="list-group-item join-game"><span class="badge"><%= games[i].users.length %></span><%= games[i].name %></a>
       <%
       } 
     } %>
