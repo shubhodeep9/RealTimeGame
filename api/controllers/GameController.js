@@ -31,7 +31,7 @@ module.exports = {
   		User.findOne({id: req.session.user}).exec(function(err, user){
   			Game.findOne({id:req.param("gameid")}).exec(function(err, game){
   				if(game.users.length < 4 && game.users.indexOf(user.id)<0){
-	  				if((game.allowed.length>0 && game.allowed.indexOf(req.session.user)>=0) || game.allowed.length==0){
+	  				if((game.allowed.length>0 && game.allowed.indexOf(user.username)>=0) || game.allowed.length==0){
 	  					game.users.push(user.id);
 	  					game.save(function(err){
 	  						sails.sockets.blast('gameUpdated',game);

@@ -62,7 +62,7 @@ $("#leaveGame").click(function(){
 	io.socket.post('/game/leave',function(data,jwr){
 		console.log(jwr.statusCode);
 		if(jwr.statusCode==200){
-			window.location = '/';
+			window.location.href = '/';
 		}
 	});
 });
