@@ -11,6 +11,11 @@ module.exports = {
 
   /**
    * `GameController.create()`
+   * The controller creates a new game,
+   * and pushes the update to the public\
+   * socket handler.
+   * @params req, res
+   * @return Response status code
    */
   create: function (req, res) {
   	if(req.method == "POST" && req.isSocket && req.session.user!=null){
@@ -26,6 +31,15 @@ module.exports = {
 		});
   	}
   },
+
+  /**
+  * The controller that enables one user to join\
+  * a game from the list in index page.
+  * Broadcasts the number of playes to public\
+  * socket handler.
+  * @params req, res
+  * @return Response status code
+  */
   join: function (req,res) {
   	if(req.method == "POST" && req.session.user && !req.session.game && req.param("gameid",null)!=null && req.isSocket){
   		User.findOne({id: req.session.user}).exec(function(err, user){
@@ -50,6 +64,13 @@ module.exports = {
   		});
   	}
   },
+
+  /**
+  * The controller sets the game session\
+  * Renders the view for the page /game/play
+  * @params req, res
+  * @return Renders game.ejs
+  */
   play: function (req,res){
   	if(req.session.user){
 		Game.findOne({users:req.session.user}).exec(function(err,game){
@@ -66,6 +87,12 @@ module.exports = {
   		res.redirect('/auth/login');
   	}
   },
+
+  /**
+  * The controller joins the socket to the session game room.
+  * @params req, res
+  * @return response json
+  */
   subscribe: function(req,res){
   	if(req.isSocket && req.session.game){
   		sails.sockets.join(req,req.session.game,function(err){
@@ -76,6 +103,14 @@ module.exports = {
   	}
   },
 
+  /**
+  * The controller to leave the game room.
+  * leaves the socket room.
+  * Removes the user from the database.
+  * nullifies the game session
+  * @params req, res
+  * @return response status code
+  */
   leave: function(req,res){
   	if(req.method == "POST" && req.session.user && req.session.game && req.isSocket){
   		sails.sockets.leave(req,req.session.game,function(err){
